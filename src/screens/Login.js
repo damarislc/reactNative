@@ -9,12 +9,14 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../features/auth/authSlice";
 import { loginSchema } from "../validations/loginSchema";
 import { insertSession } from "../db";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [triggerLogin, { isError, error }] = useLoginMutation();
   const dispatch = useDispatch();
 
@@ -51,6 +53,10 @@ const Login = ({ navigation }) => {
     }
   };
 
+  const handlePasswordVisibility = () => {
+    setIsPasswordSecure(!isPasswordSecure);
+  };
+
   return (
     <View style={styles.main}>
       <View style={styles.container}>
@@ -61,13 +67,22 @@ const Login = ({ navigation }) => {
           isSecure={false}
           error={errorEmail}
         />
-        <InputForm
-          label="Password"
-          value={password}
-          onChangeText={(t) => setPassword(t)}
-          isSecure={true}
-          error={errorPassword}
-        />
+        <View style={styles.passwordContainer}>
+          <InputForm
+            label="Password"
+            value={password}
+            onChangeText={(t) => setPassword(t)}
+            isSecure={isPasswordSecure}
+            error={errorPassword}
+          />
+          <Pressable style={styles.eyeIcon} onPress={handlePasswordVisibility}>
+            {isPasswordSecure ? (
+              <MaterialCommunityIcons name="eye" size={24} color="black" />
+            ) : (
+              <MaterialCommunityIcons name="eye-off" size={24} color="black" />
+            )}
+          </Pressable>
+        </View>
         <SubmitButton onPress={onSubmit} title="Iniciar sesion" />
         <Text style={styles.sub}>No tienes cuenta?</Text>
         <Pressable onPress={() => navigation.navigate("Register")}>
@@ -95,19 +110,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 20,
   },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 20,
+  },
   title: {
     fontSize: 22,
-    //fontFamily: fonts.Poppins,
+    fontFamily: "Poppins",
     color: "white",
   },
   sub: {
     fontSize: 14,
     color: "white",
-    //fontFamily: fonts.Poppins,
+    fontFamily: "Poppins",
   },
   sublink: {
     fontSize: 14,
-    // fontFamily: fonts.Poppins,
+    fontFamily: "Poppins",
     color: colors.lightGray,
   },
 });

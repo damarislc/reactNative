@@ -24,8 +24,11 @@ const Register = ({ navigation }) => {
     try {
       registerSchema.validateSync({ email, password, confirmPassword });
       const { data } = await triggerRegister({ email, password });
-      if (!data) setErrorEmail("Este correo ya está registrado.");
-      else navigation.navigate("Login");
+      if (!data) {
+        setErrorEmail("Este correo ya está registrado.");
+        setErrorPassword("");
+        setErrorConfirmPassword("");
+      } else navigation.navigate("Login");
     } catch (error) {
       switch (error.path) {
         case "email":
@@ -100,17 +103,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    //fontFamily: fonts.Poppins,
+    fontFamily: "Poppins",
     color: "white",
   },
   sub: {
     fontSize: 14,
-    //fontFamily: fonts.Poppins,
+    fontFamily: "Poppins",
     color: "white",
   },
   subLink: {
     fontSize: 14,
-    //fontFamily: fonts.Poppins,
+    fontFamily: "Poppins",
     color: colors.lightGray,
   },
 });

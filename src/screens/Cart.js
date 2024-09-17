@@ -19,7 +19,7 @@ const Cart = ({ navigation }) => {
     };
     triggerPostOrder({ order, localId });
     dispatch(clearCart());
-    navigation.navigate("Orders");
+    navigation.navigate("OrdersStack");
   };
 
   handleDeleteItem = (id) => {

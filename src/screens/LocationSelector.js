@@ -15,7 +15,6 @@ const LocationSelector = ({ navigation }) => {
     longitude: "",
     address: "",
   });
-  const [disabled, setDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [triggerPostUserLocation] = usePostUserLocationMutation();
   const localId = useSelector((state) => state.auth.localId);
@@ -27,7 +26,6 @@ const LocationSelector = ({ navigation }) => {
 
         if (status !== "granted") return;
         const newLocation = await Location.getCurrentPositionAsync();
-        console.log(newLocation);
 
         setLocation({
           ...location,
@@ -41,13 +39,21 @@ const LocationSelector = ({ navigation }) => {
   }, []);
 
   const getLastKnownPosition = async () => {
-    const position = await Location.getLastKnownPositionAsync();
+    try {
+      const position = await Location.getLastKnownPositionAsync();
 
-    setLocation({
-      ...location,
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    });
+      setLocation({
+        ...location,
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    } catch (error) {
+      //TODO notificación de error
+      console.log(
+        "No se pudo obtener la ubicación, asegurese de que el servicio de localización está activado"
+      );
+      navigation.navigate("MyProfile");
+    }
   };
 
   useEffect(() => {
@@ -60,7 +66,6 @@ const LocationSelector = ({ navigation }) => {
           ...location,
           address: data.results[0].formatted_address,
         });
-        setDisabled(false);
         setIsLoading(false);
       }
     })();
@@ -72,18 +77,23 @@ const LocationSelector = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.loadingContainer}></View>
-      <Text style={styles.address}>Direccion: {location.address}</Text>
-      <View style={styles.mapContainer}>
-        <MapPreview styles={styles.map} location={location} />
-        <SubmitButton
-          title="Confirmar Ubicacion"
-          onPress={handleConfirmLocation}
-          disabled={disabled}
-        />
-      </View>
-    </View>
+    <>
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.loadingContainer}></View>
+          <Text style={styles.address}>Direccion: {location.address}</Text>
+          <View style={styles.mapContainer}>
+            <MapPreview styles={styles.map} location={location} />
+            <SubmitButton
+              title="Confirmar Ubicacion"
+              onPress={handleConfirmLocation}
+            />
+          </View>
+        </View>
+      )}
+    </>
   );
 };
 

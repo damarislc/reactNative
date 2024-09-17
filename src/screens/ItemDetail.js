@@ -21,6 +21,8 @@ const ItemDetail = ({ route }) => {
 
   const handleAddItemCart = () => {
     dispatch(addItemCart({ ...product, quantity: 1 }));
+
+    navigation.popToTop();
     navigation.navigate("CartStack");
   };
 

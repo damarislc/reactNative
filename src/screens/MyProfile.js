@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, StyleSheet, View } from "react-native";
 import SubmitButton from "../components/SubmitButton";
 import { useSelector } from "react-redux";
 import { useGetUserQuery } from "../services/users";
@@ -44,9 +44,10 @@ export default MyProfile;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 70,
+    marginTop: 20,
     alignItems: "center",
     gap: 20,
+    flex: 1,
   },
   image: {
     width: 150,
